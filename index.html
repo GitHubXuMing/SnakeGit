@@ -14,14 +14,18 @@
 		<script type="text/javascript">
 			$(function() {
 				var snakegame = new Snake();
-				
-				startImg.onload = function(){
-					snakegame.init();
-				}
-				
-				$("#gameview").click(function(){
+				//带初始化界面
+//				startImg.onload = function(){
+//					snakegame.init();
+//				}
+//				
+//				$("#gameview").click(function(){
+//					snakegame.start();
+//				});
+				//直接进入游戏界面
+				bgImg.onload = function(){
 					snakegame.start();
-				});
+				}
 			});
 		</script>
 	</body>
