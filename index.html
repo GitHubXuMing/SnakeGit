@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>响应式贪吃蛇1701</title>
+	</head>
+
+	<body>
+		<h3 id="title">开始游戏</h3>
+		<canvas id="gameview" width="500" height="500"></canvas>
+
+		<script src="static/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function() {
+				var startImage = new Image();
+				startImage.src = "static/img/start.png";
+				startImage.onload = function() {
+					$("#gameview")[0].getContext('2d').drawImage(startImage, 0, 0, 500, 500);
+				}
+			});
+		</script>
+	</body>
+
+</html>
