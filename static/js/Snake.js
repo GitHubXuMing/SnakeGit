@@ -147,16 +147,11 @@ function Snake() {
 	}
 	/*
 	 * 3-蛇动（事件改变蛇移动方向，判断蛇是否死掉，然后判断蛇是否吃了食物，之后蛇移动）
-	 * 
-	 * 
+	 * 3.1 判断设备如果是pc，响应键盘事件，否则，响应触屏事件
+	 * 3.2 生成键盘事件处理器this.keyHandler()，和触屏事件处理器this.touchHandler()
 	 */
-	
-	
-	this.move = function() {
-		
-		
-		
-		//事件处理是异步的，所以，无法传递this对象
+	this.keyHandler = function(){//键盘事件处理器
+			//事件处理是异步的，所以，无法传递this对象
 		var _this = this;
 		document.onkeydown = function(ev){
 			var ev = ev||window.event;
@@ -181,8 +176,50 @@ function Snake() {
 				break;
 			}
 		}
+	}
+	
+	this.touchHandler = function(){//触屏事件处理器
+		var _this = this;
+		document.addEventListener("touchstart",function(ev){
+			var ev = ev||window.event;
+//			console.log(ev);
+			var touchX = ev.changedTouches[0].clientX;
+			var touchY = ev.changedTouches[0].clientY;
+			console.log(touchX+":"+touchY);
+			var head = _this.snakeBodyList[0];
+			var headX = head.x*_this.step;//注意蛇头x坐标值与px的转换  乘以_this.step
+			var headY = head.y*_this.step;//注意蛇头x坐标值与px的转换  乘以_this.step
+			if(head.direct == "north" || head.direct == "south"){
+				if(touchX < headX){
+					head.direct = "west";
+					head.img = westImg;
+				}else{
+					head.direct = "east";
+					head.img = eastImg;
+				}
+			}else if(head.direct == "west" || head.direct == "east"){
+				if(touchY < headY){
+					head.direct = "north";
+					head.img = northImg;
+				}else{
+					head.direct = "south";
+					head.img = southImg;
+				}
+			}
+			
+		})
 		
+	}
+	
+	this.move = function() {
+		
+		if(!this.isPhone){
+			this.keyHandler();
+		}else{
+			this.touchHandler();
+		}	
 		//3.1运用定时器，每隔0.2秒移动蛇（蛇的坐标变化，然后重绘）
+		var _this = this;
 		this.timer = setInterval(function(){
 			//首先：解决蛇身跟随的问题
 			for(var i = _this.snakeBodyList.length-1;i>0;i--){
@@ -209,12 +246,13 @@ function Snake() {
 		_this.dead();//判断蛇生死，isDead
 		if(_this.isDead){
 			//alert你的最终分数
-			console.log("Your score is:"+_this.score);
+			alert("Your score is:"+_this.score);
 			//重新开始游戏restart（）方法
 			clearInterval(_this.timer);//如果不清除定时器，则速度会不断加快
 			_this.isDead = false;//改变isDead状态，否则，每次直接死掉
 			_this.snakeBodyList = [];//清除蛇身，便于重新开始游戏，重绘初始界面
-			_this.start();//游戏重新开始
+//			_this.start();//游戏重新开始
+			$(_this.canvas).hide(2000);
 		}else{
 			//3.1.2 false：蛇活着，判断蛇头是否与食物的坐标点一致，如果一致，清空食物数组（多个食物时，可以使用标识位）
 			_this.eat();//判断食物是否被吃，isEaten
